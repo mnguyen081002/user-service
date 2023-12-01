@@ -1,19 +1,13 @@
 package config
 
 import (
-	"erp/internal/constants"
 	"fmt"
-	"os"
-
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
 var (
-	ConfigDefaultFile = "config/config.yml"
-	ConfigReleaseFile = "config/config.release.yml"
-	ConfigDevFile     = "config/config.dev.yml"
-	configType        = "yml"
+	ConfigDefaultFile = "config/config.yaml"
+	configType        = "yaml"
 )
 
 type (
@@ -64,6 +58,7 @@ type (
 		Secret                string `mapstructure:"secret"`
 		AccessTokenExpiresIn  int64  `mapstructure:"accessTokenExpiresIn"`
 		RefreshTokenExpiresIn int64  `mapstructure:"refreshTokenExpiresIn"`
+		Kid                   string `mapstructure:"kid"`
 	}
 
 	Logger struct {
@@ -87,24 +82,12 @@ func NewConfig() *Config {
 }
 
 func initConfig() {
-	var configFile string
-	switch os.Getenv("ENV") {
-	case constants.Prod:
-		configFile = ConfigReleaseFile
-		fmt.Printf("gin mode %s,config%s\n", gin.EnvGinMode, ConfigReleaseFile)
-	case constants.Dev:
-		configFile = ConfigDevFile
-		fmt.Printf("gin mode: %s,config file: %s\n", gin.EnvGinMode, ConfigDevFile)
-	default:
-		configFile = ConfigDefaultFile
-		fmt.Printf("gin mode %s,config%s\n", gin.EnvGinMode, ConfigDefaultFile)
-	}
+	var configFile = ConfigDefaultFile
 	viper.SetConfigType(configType)
 	viper.SetConfigFile(configFile)
 
 	err := viper.ReadInConfig()
-
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 }

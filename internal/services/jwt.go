@@ -2,11 +2,11 @@ package service
 
 import (
 	config "erp/config"
-	"erp/internal/api_errors"
 	"erp/internal/constants"
 	"erp/internal/domain"
 	"erp/internal/infrastructure"
 	"erp/internal/repository"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -30,7 +30,7 @@ func NewJwtService(ufw *repository.UnitOfWork, db infrastructure.Database, confi
 	}
 }
 
-func (j *jwtService) GenerateToken(userID string, tokenType constants.TokenType, expiresIn int64) (string, error) {
+func (j *jwtService) GenerateToken(userID string, kid string, tokenType constants.TokenType, expiresIn int64) (string, error) {
 	claims := domain.JwtClaims{
 		StandardClaims: jwt.StandardClaims{
 			Subject:   userID,
@@ -40,7 +40,20 @@ func (j *jwtService) GenerateToken(userID string, tokenType constants.TokenType,
 		TokenType: string(tokenType),
 	}
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.config.Jwt.Secret))
+	tokenObj := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	tokenObj.Header["kid"] = kid
+
+	privateKeyFromFile, err := os.ReadFile("./config/keys/private.txt")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	privateKey, err := jwt.ParseECPrivateKeyFromPEM(privateKeyFromFile)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	token, err := tokenObj.SignedString(privateKey)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
@@ -49,43 +62,15 @@ func (j *jwtService) GenerateToken(userID string, tokenType constants.TokenType,
 }
 
 func (j *jwtService) GenerateAuthTokens(userID string) (string, string, error) {
-
-	j.logger.Debug("Generating auth tokens", zap.Any("ExpiresIn", j.config.Jwt.AccessTokenExpiresIn))
-
-	accessToken, err := j.GenerateToken(userID, constants.AccessToken, j.config.Jwt.AccessTokenExpiresIn)
+	accessToken, err := j.GenerateToken(userID, j.config.Jwt.Kid, constants.AccessToken, j.config.Jwt.AccessTokenExpiresIn)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := j.GenerateToken(userID, constants.RefreshToken, j.config.Jwt.RefreshTokenExpiresIn)
+	refreshToken, err := j.GenerateToken(userID, j.config.Jwt.Kid, constants.RefreshToken, j.config.Jwt.RefreshTokenExpiresIn)
 	if err != nil {
 		return "", "", err
 	}
 
 	return accessToken, refreshToken, nil
-}
-
-func (j *jwtService) ValidateToken(token string, tokenType constants.TokenType) (*string, error) {
-	claims := jwt.StandardClaims{}
-	_, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(j.config.Jwt.Secret), nil
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	if claims.ExpiresAt < time.Now().Unix() {
-		return nil, errors.New(api_errors.ErrTokenExpired)
-	}
-
-	if claims.Issuer != "erp" {
-		return nil, errors.New(api_errors.ErrTokenInvalid)
-	}
-
-	if claims.Subject == "" {
-		return nil, errors.New(api_errors.ErrTokenInvalid)
-	}
-
-	return &claims.Subject, nil
 }

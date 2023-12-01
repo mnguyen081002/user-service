@@ -46,11 +46,11 @@ func (b *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	_, err := b.authService.Login(c.Request.Context(), req)
+	r, err := b.authService.Login(c.Request.Context(), req)
 
 	if err != nil {
 		ResponseError(c, err)
 		return
 	}
-	Response(c, http.StatusOK, "success", nil)
+	Response(c, http.StatusOK, "success", r)
 }

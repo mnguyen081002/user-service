@@ -1,0 +1,15 @@
+# Patterns to ignore when building a Docker image for a Golang project
+
+# Ignore version control system directories
+.git
+.svn*.exe
+
+.vscode/
+.idea/
+
+# Ignore test and build files
+_test
+build/
+
+# Ignore vendor directory
+vendor/

@@ -1,4 +1,3 @@
----
 debug: true
 contextTimeout: 5
 
@@ -21,11 +20,11 @@ database:
     sslmode: 'disable'
     timezone: 'Asia/Ho_Chi_Minh'
   postgres:
-    host: '34.124.207.102'
+    host: '34.92.104.68'
     port: '5432'
-    username: 'admin'
-    password: 'admin'
-    name: 'tony-ecommerce'
+    username: 'postgres'
+    password: 'postgres'
+    name: 'tony_ecommerce'
     sslmode: 'disable'
     timezone: 'Asia/Ho_Chi_Minh'
 
@@ -33,5 +32,8 @@ jwt:
   secret: 'hgG6T23XD25N'
   accessTokenExpiresIn: 3600
   refreshTokenExpiresIn: 86400
+  kid: 'kid'
+  aud: 'aud'
+  iss: 'iss'
 logger:
   level: 'debug'
