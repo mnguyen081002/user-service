@@ -24,7 +24,7 @@ database:
     port: '5432'
     username: 'postgres'
     password: 'postgres'
-    name: 'tony_ecommerce'
+    name: 'user_service'
     sslmode: 'disable'
     timezone: 'Asia/Ho_Chi_Minh'
 
