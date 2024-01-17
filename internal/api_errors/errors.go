@@ -8,8 +8,8 @@ var (
 	ErrInvalidUserID       = "10002"
 	ErrValidation          = "10003"
 	ErrDeleteFailed        = "10004"
-	ErrUserNotFound        = "10005"
 
+	ErrUserNotFound       = "20005"
 	ErrEmailAlreadyExists = "20000"
 	ErrEmailNotFound      = "20001"
 	ErrInvalidPassword    = "20002"
