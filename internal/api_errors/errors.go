@@ -3,24 +3,16 @@ package api_errors
 import "net/http"
 
 var (
-	ErrInternalServerError  = "10000"
-	ErrUnauthorizedAccess   = "10001"
-	ErrTokenBadSignedMethod = "10002"
-	ErrTokenExpired         = "10003"
-	ErrTokenInvalid         = "10004"
-	ErrTokenMalformed       = "10005"
-	ErrUserNotFound         = "10006"
-	ErrProductNotFound      = "10007"
-	ErrRequestTimeout       = "10008"
-	ErrTokenMissing         = "10009"
-	ErrValidation           = "10010"
-	ErrInvalidUserID        = "10011"
-	ErrMissingXStoreID      = "10012"
-	ErrPermissionDenied     = "10013"
-	ErrInvalidPassword      = "10014"
-	ErrStoreNotFound        = "10015"
-	ErrEmailAlreadyExists   = "10016"
-	ErrEmailNotFound        = "10017"
+	ErrInternalServerError = "10000"
+	ErrUnauthorizedAccess  = "10001"
+	ErrInvalidUserID       = "10002"
+	ErrValidation          = "10003"
+	ErrDeleteFailed        = "10004"
+	ErrUserNotFound        = "10005"
+
+	ErrEmailAlreadyExists = "20000"
+	ErrEmailNotFound      = "20001"
+	ErrInvalidPassword    = "20002"
 )
 
 type MessageAndStatus struct {
@@ -29,22 +21,15 @@ type MessageAndStatus struct {
 }
 
 var MapErrorCodeMessage = map[string]MessageAndStatus{
-	ErrInternalServerError:  {"Internal Server Error", http.StatusInternalServerError},
-	ErrUnauthorizedAccess:   {"Unauthorized Access", http.StatusUnauthorized},
-	ErrTokenBadSignedMethod: {"Token Bad Signed Method", http.StatusUnauthorized},
-	ErrTokenExpired:         {"Token Expired", http.StatusUnauthorized},
-	ErrTokenInvalid:         {"Token Invalid", http.StatusUnauthorized},
-	ErrTokenMalformed:       {"Token Malformed", http.StatusUnauthorized},
-	ErrUserNotFound:         {"User Not Found", http.StatusNotFound},
-	ErrProductNotFound:      {"Product Not Found", http.StatusNotFound},
-	ErrRequestTimeout:       {"Request Timeout", http.StatusRequestTimeout},
-	ErrTokenMissing:         {"Token Missing", http.StatusUnauthorized},
-	ErrValidation:           {"Validation Error", http.StatusBadRequest},
-	ErrInvalidUserID:        {"Invalid User ID", http.StatusBadRequest},
-	ErrMissingXStoreID:      {"Missing x-store-id", http.StatusBadRequest},
-	ErrPermissionDenied:     {"Permission Denied", http.StatusForbidden},
-	ErrInvalidPassword:      {"Invalid Password", http.StatusBadRequest},
-	ErrStoreNotFound:        {"Store Not Found", http.StatusNotFound},
-	ErrEmailAlreadyExists:   {"Email Already Exists", http.StatusConflict},
-	ErrEmailNotFound:        {"Email Not Found", http.StatusNotFound},
+	// 10000 - 19999: Common errors
+	ErrInternalServerError: {"Internal Server Error", http.StatusInternalServerError},
+	ErrUnauthorizedAccess:  {"Unauthorized Access", http.StatusUnauthorized},
+	ErrInvalidUserID:       {"Invalid User ID", http.StatusBadRequest},
+	ErrValidation:          {"Validation Error", http.StatusBadRequest},
+	ErrDeleteFailed:        {"Delete Failed", http.StatusInternalServerError},
+	ErrUserNotFound:        {"User Not Found", http.StatusNotFound},
+	// Service errors
+	ErrEmailAlreadyExists: {"Email Already Exists", http.StatusBadRequest},
+	ErrEmailNotFound:      {"Email Not Found", http.StatusBadRequest},
+	ErrInvalidPassword:    {"Invalid Password", http.StatusBadRequest},
 }
