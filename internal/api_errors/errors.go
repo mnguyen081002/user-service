@@ -9,10 +9,10 @@ var (
 	ErrValidation          = "10003"
 	ErrDeleteFailed        = "10004"
 
-	ErrUserNotFound       = "20005"
-	ErrEmailAlreadyExists = "20000"
-	ErrEmailNotFound      = "20001"
-	ErrInvalidPassword    = "20002"
+	ErrUserNotFound       = "20000"
+	ErrEmailAlreadyExists = "20001"
+	ErrEmailNotFound      = "20002"
+	ErrInvalidPassword    = "20003"
 )
 
 type MessageAndStatus struct {
